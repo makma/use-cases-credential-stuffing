@@ -85,5 +85,5 @@ const assertElementWhileRepeatedlyReloadingPage = async (
     await page.waitForTimeout(waitBetweenAttempts);
     await page.reload();
   }
-  await expect(locator).toBeVisible();
+  await locator.waitFor({ state: 'visible' });
 };

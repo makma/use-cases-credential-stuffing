@@ -93,6 +93,12 @@ test.describe('Account Sharing - single browser tests', () => {
 });
 
 test.describe('Account Sharing - multi-browser tests', () => {
+  /**
+   * Only run these tests in the Chrome e2e branch
+   * These tests already use multiple browsers (Chrome and Firefox), it's sufficient to run them once.
+   */
+  test.skip(({ browserName }) => browserName !== 'chromium', 'Multi-browser by nature');
+
   test.beforeEach(async () => {
     await ensureTestUserExists();
     await ensureTestUserNotLoggedInAnywhere();

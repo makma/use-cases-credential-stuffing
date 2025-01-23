@@ -6,7 +6,7 @@ import MobileNavbar from '../MobileNavbar/MobileNavbar';
 import Container from '../Container';
 import HeaderBar from '../HeaderBar/HeaderBar';
 import classNames from 'classnames';
-import { PLAYGROUND_METADATA, URL, USE_CASES_NAVIGATION } from '../../content';
+import { PLAYGROUND_METADATA, URLS, USE_CASES_NAVIGATION } from '../../content';
 import { DropdownLikeLink, DropdownMenu } from '../DropdownMenu/DropdownMenu';
 import Image from 'next/image';
 import LogoSvg from './fpjs.svg';
@@ -117,7 +117,7 @@ export default function Header({ notificationBar, onReset }: HeaderProps) {
                   </Tooltip>
                 )}
                 <Button
-                  href={URL.contactSales}
+                  href={URLS.contactSales}
                   size='medium'
                   outlined
                   openNewTab
@@ -130,7 +130,7 @@ export default function Header({ notificationBar, onReset }: HeaderProps) {
                   variant='primary'
                   size='medium'
                   className={styles.signupButton}
-                  href={URL.signupUrl}
+                  href={URLS.signupUrl}
                   openNewTab
                   buttonId='click_top_nav_get_started'
                 >

@@ -36,6 +36,7 @@ form.accountSharingForm {
     font-weight: 700;
     font-size: rem(32px);
     letter-spacing: 0;
+    margin-left: rem(3px);
   }
 
   @include media('<=phone') {

@@ -25,6 +25,7 @@ export type UseCase = {
   descriptionHomepage?: readonly React.ReactNode[];
   descriptionMeta: string;
   articleUrl?: string;
+  githubUrl?: string;
   doNotMentionResetButton?: boolean;
   instructions: readonly (ReactNode | ((props: RestartHintProps) => ReactNode))[];
   instructionsNote?: ReactNode;
@@ -162,6 +163,7 @@ export const USE_CASES = {
     titleMeta: 'Fingerprint Use Cases | Account Sharing',
     url: '/account-sharing',
     articleUrl: 'https://fingerprint.com/blog/increase-revenue-identifying-preventing-account-sharing/',
+    githubUrl: `https://github.com/fingerprintjs/fingerprintjs-pro-use-cases/tree/main/src/app/account-sharing`,
     iconSvg: SmartSignalsIcon,
     descriptionMeta:
       'See in real-time how Fingerprint can prevent account sharing. Try out our live demo to see Fingerprint detect too many devices using a single account at the same time.=',
@@ -185,10 +187,10 @@ export const USE_CASES = {
       </>
     ),
     instructions: [
-      <>Create an account in the form below and log in to our demo streaming service.</>,
+      <>Create an account in the form below and log in to our FraudFlix demo streaming service.</>,
       <>
-        Open this page <AccountSharingDemoLink /> in a different browser. For example, if you are using Chrome, open
-        Firefox, or open the demo on your phone.
+        Open this page <AccountSharingDemoLink /> in a different browser or device. For example, if you are using
+        Chrome, open the demo on Firefox, Safari, or on your phone.
       </>,
       <>Try logging in with the same username and password.</>,
       <>You will be blocked from logging in and forced to log out in the original browser first.</>,
@@ -631,6 +633,7 @@ export const USE_CASES = {
     titleMeta: 'Fingerprint Use Cases | VPN Detection and Location Spoofing Prevention',
     url: '/vpn-detection',
     articleUrl: 'https://fingerprint.com/blog/vpn-detection-location-spoofing-fraud-prevention/',
+    githubUrl: 'https://github.com/fingerprintjs/fingerprintjs-pro-use-cases/tree/main/src/app/vpn-detection',
     iconSvg: VpnDetectionIcon,
     descriptionHomepage: [
       <p key='1'>
@@ -725,8 +728,9 @@ export const HOMEPAGE_CARDS: HomePageCard[] = [PLAYGROUND_METADATA, ...USE_CASES
   descriptionHomepage: useCase.descriptionHomepage,
 }));
 
-export const URL = {
+export const URLS = {
   mainSite: 'https://fingerprint.com',
+  useCasesRepoUrl: 'https://github.com/fingerprintjs/fingerprintjs-pro-use-cases',
   githubRepoUrl: 'https://github.com/fingerprintjs/fingerprintjs/',
   githubApiUrl: 'https://api.github.com/repos/fingerprintjs',
   githubCommunityRepoUrl: 'https://github.com/fingerprintjs/home',

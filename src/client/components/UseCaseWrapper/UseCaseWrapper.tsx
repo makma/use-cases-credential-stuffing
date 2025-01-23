@@ -7,7 +7,7 @@ import Button from '../Button/Button';
 import Lightbulb from './lightbulb.svg';
 import Image from 'next/image';
 import { Tooltip } from '@mui/material';
-import { UseCase } from '../../content';
+import { URLS, UseCase } from '../../content';
 import ExternalLinkIcon from '../../img/externalLinkArrow.svg';
 import RestartIcon from '../../img/restart.svg';
 import { useReset } from '../../hooks/useReset/useReset';
@@ -40,7 +40,7 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
   noInnerPadding,
   onReset,
 }) => {
-  const { title, description, articleUrl, instructions, moreResources, doNotMentionResetButton } = useCase;
+  const { title, description, articleUrl, instructions, moreResources, doNotMentionResetButton, githubUrl } = useCase;
   const learnMoreRef = useRef<ElementRef<'h3'>>(null);
 
   const { mutate: resetScenarios, shouldDisplayResetButton, isLoading } = useReset({ onSuccess: onReset });
@@ -82,7 +82,7 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
         <div className={styles.description}>{description}</div>
         <div className={styles.externalLinks}>
           {!hideSrcListItem && (
-            <a href='https://github.com/fingerprintjs/fingerprintjs-pro-use-cases' target='_blank' rel='noreferrer'>
+            <a href={githubUrl ?? URLS.useCasesRepoUrl} target='_blank' rel='noreferrer'>
               See on GitHub
               <Image src={ExternalLinkIcon} alt='' />
             </a>

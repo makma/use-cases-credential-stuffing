@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '../Button/Button';
 import classNames from 'classnames';
 import styles from './MobileNavbar.module.scss';
-import { PLAYGROUND_METADATA, URL, USE_CASES_NAVIGATION } from '../../content';
+import { PLAYGROUND_METADATA, URLS, USE_CASES_NAVIGATION } from '../../content';
 import { DropdownLikeLink, DropdownMenu } from '../DropdownMenu/DropdownMenu';
 import Image from 'next/image';
 import Restart from '../../img/restart.svg';
@@ -44,7 +44,7 @@ export default function MobileNavbar({ darkMode, closeMobileMenu, onReset }: Mob
         ) : null}
         <div className={classNames(styles.links, styles.top)}>
           <Button
-            href={URL.contactSales}
+            href={URLS.contactSales}
             variant={darkMode ? 'dark' : 'primary'}
             outlined
             size='medium'
@@ -56,7 +56,7 @@ export default function MobileNavbar({ darkMode, closeMobileMenu, onReset }: Mob
           <Button
             variant='primary'
             size='medium'
-            href={URL.signupUrl}
+            href={URLS.signupUrl}
             className={styles.signupButton}
             openNewTab
             buttonId='click_top_nav_get_started'
