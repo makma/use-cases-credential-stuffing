@@ -44,33 +44,33 @@ export const useReset = ({ onError, onSuccess }: UseResetParams) => {
             anchorOrigin: { vertical: 'bottom', horizontal: 'right' },
           });
         }),
-      onSuccess:
-        onSuccess ??
-        ((data) => {
-          enqueueSnackbar(
-            <div data-testid={TEST_IDS.reset.resetSuccess}>
-              <p>
-                <b>Scenarios reset successfully!</b>
-              </p>{' '}
-              <ul>
-                <li>Deleted {data.result?.deletedCouponsClaims} coupon claims.</li>
-                <li>Deleted {data.result?.deletedLoginAttempts} login attempts.</li>
-                <li>Deleted {data.result?.deletedLoanRequests} loan requests.</li>
-                <li>Deleted {data.result?.deletedPaymentAttempts} payment attempts.</li>
-                <li>Deleted {data.result?.deletedArticleViews} article views.</li>
-                <li>Deleted {data.result?.deletedPersonalizationRecords} personalization records.</li>
-                <li>Deleted {data.result?.deletedBlockedIps} blocked IPs.</li>
-                <li>Deleted {data.result?.deletedSmsVerificationRequests} SMS verification requests.</li>
-              </ul>
-            </div>,
-            {
-              variant: 'success',
-              anchorOrigin: { vertical: 'bottom', horizontal: 'right' },
-              autoHideDuration: 6000,
-              className: styles.snackbar,
-            },
-          );
-        }),
+      onSuccess: (data) => {
+        onSuccess?.();
+        enqueueSnackbar(
+          <div data-testid={TEST_IDS.reset.resetSuccess}>
+            <p>
+              <b>Scenarios reset successfully!</b>
+            </p>{' '}
+            <ul>
+              <li>Deleted {data.result?.deletedCouponsClaims} coupon claims.</li>
+              <li>Deleted {data.result?.deletedLoginAttempts} login attempts.</li>
+              <li>Deleted {data.result?.deletedLoanRequests} loan requests.</li>
+              <li>Deleted {data.result?.deletedPaymentAttempts} payment attempts.</li>
+              <li>Deleted {data.result?.deletedArticleViews} article views.</li>
+              <li>Deleted {data.result?.deletedPersonalizationRecords} personalization records.</li>
+              <li>Deleted {data.result?.deletedBlockedIps} blocked IPs.</li>
+              <li>Deleted {data.result?.deletedSmsVerificationRequests} SMS verification requests.</li>
+              <li>Deleted {data.result?.deletedAccountSharingRecords} account sharing records.</li>
+            </ul>
+          </div>,
+          {
+            variant: 'success',
+            anchorOrigin: { vertical: 'bottom', horizontal: 'right' },
+            autoHideDuration: 6000,
+            className: styles.snackbar,
+          },
+        );
+      },
     },
   );
 

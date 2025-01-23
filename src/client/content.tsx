@@ -13,6 +13,7 @@ import SmsIcon from './img/smsIcon.svg';
 import { ReactNode } from 'react';
 import { RestartHint, RestartHintProps } from './components/UseCaseWrapper/RestartHint';
 import { TEST_PHONE_NUMBER } from '../app/sms-pumping/api/smsPumpingConst';
+import { AccountSharingDemoLink } from '../app/account-sharing/components/AccountSharingDemoLink';
 
 export const PRODUCTION_URL = 'https://demo.fingerprint.com';
 
@@ -24,6 +25,7 @@ export type UseCase = {
   descriptionHomepage?: readonly React.ReactNode[];
   descriptionMeta: string;
   articleUrl?: string;
+  githubUrl?: string;
   doNotMentionResetButton?: boolean;
   instructions: readonly (ReactNode | ((props: RestartHintProps) => ReactNode))[];
   instructionsNote?: ReactNode;
@@ -156,43 +158,66 @@ export const USE_CASES = {
       },
     ],
   },
-  loanRisk: {
-    title: 'Loan Risk',
-    titleMeta: 'Fingerprint Use Cases | Loan Fraud Live Demo',
-    url: '/loan-risk',
-    articleUrl: 'https://fingerprint.com/blog/detect-repeat-applications-loan-risk/',
-    iconSvg: LoanRiskIcon,
-    descriptionHomepage: [
-      <p key='1'>
-        Validate loan applications against prior submissions by users, whether they are anonymous or authenticated.
-      </p>,
-      <p key='2'>
-        Use Fingerprint to check for consistency between applications and ignore submissions from previously rejected
-        applicants.
-      </p>,
-    ],
-    description:
-      'Use this demo to see how Fingerprint allows you to collect high-quality, low-risk loan applications from your anonymous visitors. Prevent fraudsters and rejected applicants from submitting multiple inconsistent applications.',
+  accountSharing: {
+    title: 'Account Sharing',
+    titleMeta: 'Fingerprint Use Cases | Account Sharing',
+    url: '/account-sharing',
+    articleUrl: 'https://fingerprint.com/blog/increase-revenue-identifying-preventing-account-sharing/',
+    githubUrl: `https://github.com/fingerprintjs/fingerprintjs-pro-use-cases/tree/main/src/app/account-sharing`,
+    iconSvg: SmartSignalsIcon,
     descriptionMeta:
-      'See in real-time how Fingerprint can stop and prevent fraudsters and rejected applicants from submitting multiple inconsistent applications. Try out our live demo to learn how.',
-    instructions: [
-      <>Pick some values in the form and submit your loan application.</>,
-      <>
-        Change some of the provided information and apply for a loan again. You will be warned about the application
-        inconsistencies and your loan won't be calculated.
-      </>,
-      <>Try bypassing the protection by switching to incognito mode or deleting your cookies.</>,
+      'See in real-time how Fingerprint can prevent account sharing. Try out our live demo to see Fingerprint detect too many devices using a single account at the same time.=',
+    descriptionHomepage: [
+      <p key='1'>Users sharing their accounts can lead to security vulnerabilities and lost revenue.</p>,
+      <p key='2'>
+        Use Fingerprint device intelligence to detect account sharing a prevent too many devices from a using a single
+        account.
+      </p>,
     ],
+    description: (
+      <>
+        <p>
+          Price-conscious users often share their paid accounts between family, friends or even strangers. This practice
+          results not only in lost potential revenue but also presents a security risk.
+        </p>
+        <p>
+          Use Fingerprint device intelligence to reliably link a specific browser or device to each account login.
+          Detect and stop too many devices using a single account to prevent account sharing.
+        </p>
+      </>
+    ),
+    instructions: [
+      <>Create an account in the form below and log in to our FraudFlix demo streaming service.</>,
+      <>
+        Open this page <AccountSharingDemoLink /> in a different browser or device. For example, if you are using
+        Chrome, open the demo on Firefox, Safari, or on your phone.
+      </>,
+      <>Try logging in with the same username and password.</>,
+      <>You will be blocked from logging in and forced to log out in the original browser first.</>,
+    ],
+    instructionsNote: `This is an example implementation. In a real-world scenario, you could allow users to use up to N devices
+        simultaneously, restrict devices by a common location, or simply flag accounts suspected of account sharing for
+        a personalized upgrade campaign.`,
     moreResources: [
       {
         type: 'Use case tutorial',
-        title: 'Loan Risk',
-        url: 'https://fingerprint.com/blog/detect-repeat-applications-loan-risk/',
+        title: 'Account Sharing Prevention Guide',
+        url: 'https://fingerprint.com/blog/increase-revenue-identifying-preventing-account-sharing/',
       },
       {
-        url: 'https://fingerprint.com/blog/what-is-loan-fraud/',
+        type: 'Case study',
+        title: 'How Chegg Solved Account Sharing',
+        url: 'https://fingerprint.com/case-studies/chegg-stops-account-sharing/',
+      },
+      {
         type: 'Article',
-        title: 'What is Loan Fraud?',
+        title: 'Account sharing lessons from Netflix and Amazon',
+        url: 'https://fingerprint.com/blog/ultimate-account-sharing-prevention-guide-netflix-amazon/',
+      },
+      {
+        type: 'Article',
+        title: 'Driver account sharing fraud',
+        url: 'https://fingerprint.com/blog/preventing-account-security-fraud-in-food-delivery-services/#driver-account-sharing-fraud-puts-customers-at-risk',
       },
     ],
   },
@@ -259,6 +284,46 @@ export const USE_CASES = {
         url: 'https://fingerprint.com/blog/omnichannel-fraud/',
         type: 'Article',
         title: 'Omnichannel Fraud',
+      },
+    ],
+  },
+  loanRisk: {
+    title: 'Loan Risk',
+    titleMeta: 'Fingerprint Use Cases | Loan Fraud Live Demo',
+    url: '/loan-risk',
+    articleUrl: 'https://fingerprint.com/blog/detect-repeat-applications-loan-risk/',
+    iconSvg: LoanRiskIcon,
+    descriptionHomepage: [
+      <p key='1'>
+        Validate loan applications against prior submissions by users, whether they are anonymous or authenticated.
+      </p>,
+      <p key='2'>
+        Use Fingerprint to check for consistency between applications and ignore submissions from previously rejected
+        applicants.
+      </p>,
+    ],
+    description:
+      'Use this demo to see how Fingerprint allows you to collect high-quality, low-risk loan applications from your anonymous visitors. Prevent fraudsters and rejected applicants from submitting multiple inconsistent applications.',
+    descriptionMeta:
+      'See in real-time how Fingerprint can stop and prevent fraudsters and rejected applicants from submitting multiple inconsistent applications. Try out our live demo to learn how.',
+    instructions: [
+      <>Pick some values in the form and submit your loan application.</>,
+      <>
+        Change some of the provided information and apply for a loan again. You will be warned about the application
+        inconsistencies and your loan won't be calculated.
+      </>,
+      <>Try bypassing the protection by switching to incognito mode or deleting your cookies.</>,
+    ],
+    moreResources: [
+      {
+        type: 'Use case tutorial',
+        title: 'Loan Risk',
+        url: 'https://fingerprint.com/blog/detect-repeat-applications-loan-risk/',
+      },
+      {
+        url: 'https://fingerprint.com/blog/what-is-loan-fraud/',
+        type: 'Article',
+        title: 'What is Loan Fraud?',
       },
     ],
   },
@@ -568,6 +633,7 @@ export const USE_CASES = {
     titleMeta: 'Fingerprint Use Cases | VPN Detection and Location Spoofing Prevention',
     url: '/vpn-detection',
     articleUrl: 'https://fingerprint.com/blog/vpn-detection-location-spoofing-fraud-prevention/',
+    githubUrl: 'https://github.com/fingerprintjs/fingerprintjs-pro-use-cases/tree/main/src/app/vpn-detection',
     iconSvg: VpnDetectionIcon,
     descriptionHomepage: [
       <p key='1'>
@@ -662,8 +728,9 @@ export const HOMEPAGE_CARDS: HomePageCard[] = [PLAYGROUND_METADATA, ...USE_CASES
   descriptionHomepage: useCase.descriptionHomepage,
 }));
 
-export const URL = {
+export const URLS = {
   mainSite: 'https://fingerprint.com',
+  useCasesRepoUrl: 'https://github.com/fingerprintjs/fingerprintjs-pro-use-cases',
   githubRepoUrl: 'https://github.com/fingerprintjs/fingerprintjs/',
   githubApiUrl: 'https://api.github.com/repos/fingerprintjs',
   githubCommunityRepoUrl: 'https://github.com/fingerprintjs/home',

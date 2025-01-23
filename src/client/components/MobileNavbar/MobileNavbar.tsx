@@ -2,7 +2,7 @@ import React from 'react';
 import Button from '../Button/Button';
 import classNames from 'classnames';
 import styles from './MobileNavbar.module.scss';
-import { PLAYGROUND_METADATA, URL, USE_CASES_NAVIGATION } from '../../content';
+import { PLAYGROUND_METADATA, URLS, USE_CASES_NAVIGATION } from '../../content';
 import { DropdownLikeLink, DropdownMenu } from '../DropdownMenu/DropdownMenu';
 import Image from 'next/image';
 import Restart from '../../img/restart.svg';
@@ -12,9 +12,14 @@ import { TEST_IDS } from '../../testIDs';
 interface MobileNavbarProps {
   darkMode?: boolean;
   closeMobileMenu: () => void;
+  onReset?: () => void;
 }
-export default function MobileNavbar({ darkMode, closeMobileMenu }: MobileNavbarProps) {
-  const { mutate, isLoading: isResetLoading, shouldDisplayResetButton } = useReset({});
+export default function MobileNavbar({ darkMode, closeMobileMenu, onReset }: MobileNavbarProps) {
+  const {
+    mutate: resetScenarios,
+    isLoading: isResetLoading,
+    shouldDisplayResetButton,
+  } = useReset({ onSuccess: onReset });
 
   return (
     <nav className={classNames(styles.nav, { [styles.darkNavHeader]: darkMode })}>
@@ -23,7 +28,7 @@ export default function MobileNavbar({ darkMode, closeMobileMenu }: MobileNavbar
           <div className={classNames(styles.links, styles.top)}>
             <Button
               className={classNames(styles.resetButton, isResetLoading && styles.loading)}
-              onClick={() => mutate()}
+              onClick={() => resetScenarios()}
               variant='primary'
               outlined
               disabled={isResetLoading}
@@ -39,7 +44,7 @@ export default function MobileNavbar({ darkMode, closeMobileMenu }: MobileNavbar
         ) : null}
         <div className={classNames(styles.links, styles.top)}>
           <Button
-            href={URL.contactSales}
+            href={URLS.contactSales}
             variant={darkMode ? 'dark' : 'primary'}
             outlined
             size='medium'
@@ -51,7 +56,7 @@ export default function MobileNavbar({ darkMode, closeMobileMenu }: MobileNavbar
           <Button
             variant='primary'
             size='medium'
-            href={URL.signupUrl}
+            href={URLS.signupUrl}
             className={styles.signupButton}
             openNewTab
             buttonId='click_top_nav_get_started'

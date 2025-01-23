@@ -77,7 +77,7 @@ const loanDurationValidation = {
   max: 48,
 };
 
-export function LoanRisk() {
+export function LoanRisk({ embed }: { embed?: boolean }) {
   const { getData: getVisitorData, isLoading: isVisitorDataLoading } = useVisitorData(
     { ignoreCache: true, timeout: FPJS_CLIENT_TIMEOUT },
     { immediate: false },
@@ -121,7 +121,7 @@ export function LoanRisk() {
   const isLoading = isVisitorDataLoading || isLoanRequestLoading;
 
   return (
-    <UseCaseWrapper useCase={USE_CASES.loanRisk}>
+    <UseCaseWrapper useCase={USE_CASES.loanRisk} embed={embed}>
       <div className={classNames(formStyles.wrapper, styles.formWrapper)}>
         <form
           onSubmit={async (event) => {

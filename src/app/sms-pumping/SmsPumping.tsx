@@ -80,7 +80,7 @@ export const useSendMessage = ({ onSuccess, disableBotDetection = false }: SendM
   });
 };
 
-const SmsFraud: FunctionComponent = () => {
+const SmsFraud: FunctionComponent<{ embed?: boolean }> = ({ embed }) => {
   // Default mocked user data
   const [phoneNumber, setPhoneNumber] = useState(TEST_PHONE_NUMBER);
   const [email, setEmail] = useState('user@company.com');
@@ -124,7 +124,7 @@ const SmsFraud: FunctionComponent = () => {
   });
 
   return (
-    <UseCaseWrapper useCase={USE_CASES.smsPumping}>
+    <UseCaseWrapper useCase={USE_CASES.smsPumping} embed={embed}>
       <div className={formStyles.wrapper}>
         {formStep === 'Send SMS' && (
           <PhoneNumberForm
@@ -146,11 +146,11 @@ const SmsFraud: FunctionComponent = () => {
   );
 };
 
-export const SmsPumpingUseCase = () => {
+export const SmsPumpingUseCase = ({ embed }: { embed?: boolean }) => {
   // Suspense required due to useSearchParams() https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
   return (
     <Suspense>
-      <SmsFraud />
+      <SmsFraud embed={embed} />
     </Suspense>
   );
 };

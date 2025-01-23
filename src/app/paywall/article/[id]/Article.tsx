@@ -44,7 +44,7 @@ export function Article({ articleId, embed }: { articleId: string; embed: boolea
   const relatedArticles = ARTICLES.filter((article) => article.id !== articleId).slice(0, 4);
 
   return (
-    <UseCaseWrapper useCase={USE_CASES.paywall}>
+    <UseCaseWrapper useCase={USE_CASES.paywall} embed={embed}>
       <div className={styles.articleContainer}>
         <BackArrow as='Link' href={returnUrl} label='Back to articles' testId={TEST_IDS.paywall.goBack} />
         {!articleData && <ArticleSkeleton animation='wave' />}

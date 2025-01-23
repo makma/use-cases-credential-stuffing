@@ -5,5 +5,5 @@ import { Personalization } from '../Personalization';
 export const metadata = generateUseCaseMetadata(USE_CASES.personalization);
 
 export default function PaywallPage() {
-  return <Personalization />;
+  return <Personalization embed={true} />;
 }

@@ -113,7 +113,7 @@ const useBlockUnblockIpAddress = (
 /**
  * Bot Firewall Page Component
  */
-export const BotFirewall: FunctionComponent = () => {
+export const BotFirewall: FunctionComponent<{ embed?: boolean }> = ({ embed }) => {
   // Get visitor data from Fingerprint (just used for the visitor's IP address)
   const {
     getData: getVisitorData,
@@ -236,6 +236,7 @@ export const BotFirewall: FunctionComponent = () => {
     <>
       <UseCaseWrapper
         useCase={USE_CASES.botFirewall}
+        embed={embed}
         instructionsNote={`For the purposes of this demo, you can only block/unblock your own IP address (${visitorData?.ip}). The block expires after one hour. The database of bot visits is cleared on every website update.`}
       >
         <div className={styles.container}>

@@ -5,5 +5,5 @@ import { VpnDetectionUseCaseWrapped } from '../VpnDetectionUseCase';
 export const metadata = generateUseCaseMetadata(USE_CASES.vpnDetection);
 
 export default function VpnDetectionPage() {
-  return <VpnDetectionUseCaseWrapped />;
+  return <VpnDetectionUseCaseWrapped embed={true} />;
 }

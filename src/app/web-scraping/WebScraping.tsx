@@ -27,7 +27,7 @@ type FlightQueryResult = {
   data?: Flight[];
 };
 
-const WebScraping: FunctionComponent = () => {
+const WebScraping: FunctionComponent<{ embed?: boolean }> = ({ embed }) => {
   const searchParams = useSearchParams();
   const [fromCode, setFromCode] = useQueryState('from', {
     defaultValue: searchParams.get('from')?.toUpperCase() ?? AIRPORTS[0].code,
@@ -87,7 +87,7 @@ const WebScraping: FunctionComponent = () => {
 
   return (
     <>
-      <UseCaseWrapper useCase={USE_CASES.webScraping}>
+      <UseCaseWrapper useCase={USE_CASES.webScraping} embed={embed}>
         <h2 className={styles.searchTitle}>Search for today&apos;s flights</h2>
         <form
           onSubmit={(event) => {
@@ -135,11 +135,11 @@ const WebScraping: FunctionComponent = () => {
   );
 };
 
-export const WebScrapingUseCase = () => {
+export const WebScrapingUseCase = ({ embed }: { embed?: boolean }) => {
   // Suspense required due to useSearchParams() https://nextjs.org/docs/messages/missing-suspense-with-csr-bailout
   return (
     <Suspense>
-      <WebScraping />
+      <WebScraping embed={embed} />
     </Suspense>
   );
 };

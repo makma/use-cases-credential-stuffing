@@ -96,6 +96,13 @@ Detect when visitors are using VPN to access your application. Prevent people sp
 [🌍 VPN Detection Live Demo](https://demo.fingerprint.com/vpn-detection)  
 [📖 VPN Detection Article](https://fingerprint.com/blog/vpn-detection-location-spoofing-fraud-prevention/)
 
+### Account Sharing Prevention
+
+Detect when multiple devices are using the same account. Prevent people from sharing their account with others.
+
+[👥 Account Sharing Prevention Live Demo](https://demo.fingerprint.com/account-sharing)  
+[📖 Account Sharing Prevention Article](https://fingerprint.com/blog/prevent-coupon-promo-abuse-increase-sales/)
+
 ## Documentation and Support
 
 To dive deeper into Fingerprint Pro, see our [Documentation](https://dev.fingerprint.com/docs). For questions or suggestions specific to this repository, you can [create an issue](https://github.com/fingerprintjs/fingerprintjs-pro-use-cases/issues/new). For general questions and community vibes, visit our [Discord server](https://discord.gg/39EpE2neBg). If you require private support, you can email us at [oss-support@fingerprint.com](mailto:oss-support@fingerprint.com).

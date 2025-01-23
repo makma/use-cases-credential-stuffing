@@ -5,5 +5,5 @@ import { CredentialStuffing } from '.././CredentialStuffing';
 export const metadata = generateUseCaseMetadata(USE_CASES.credentialStuffing);
 
 export default function CredentialStuffingPage() {
-  return <CredentialStuffing />;
+  return <CredentialStuffing embed={true} />;
 }

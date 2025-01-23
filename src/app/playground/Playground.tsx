@@ -30,6 +30,7 @@ import { ChevronSvg } from '../../client/img/chevronSvg';
 import { pluralize } from '../../utils/utils';
 import { motion } from 'framer-motion';
 import { JsonLink, DocsLink } from './components/ArrowLinks';
+import { LayoutUI } from '../LayoutUI';
 
 // Nothing magic about `8` here, each customer must define their own use-case specific threshold
 const SUSPECT_SCORE_RED_THRESHOLD = 8;
@@ -569,7 +570,7 @@ export function Playground() {
   ];
 
   return (
-    <>
+    <LayoutUI>
       <Container size='large' className={styles.hero}>
         <h1>
           <span>Fingerprint Pro</span> Playground
@@ -706,6 +707,6 @@ export function Playground() {
           </>
         ) : null}
       </>
-    </>
+    </LayoutUI>
   );
 }

@@ -6,7 +6,7 @@ import MobileNavbar from '../MobileNavbar/MobileNavbar';
 import Container from '../Container';
 import HeaderBar from '../HeaderBar/HeaderBar';
 import classNames from 'classnames';
-import { PLAYGROUND_METADATA, URL, USE_CASES_NAVIGATION } from '../../content';
+import { PLAYGROUND_METADATA, URLS, USE_CASES_NAVIGATION } from '../../content';
 import { DropdownLikeLink, DropdownMenu } from '../DropdownMenu/DropdownMenu';
 import Image from 'next/image';
 import LogoSvg from './fpjs.svg';
@@ -26,8 +26,9 @@ interface HeaderProps {
     url?: string;
     backgroundColor?: string;
   };
+  onReset?: () => void;
 }
-export default function Header({ notificationBar }: HeaderProps) {
+export default function Header({ notificationBar, onReset }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -47,7 +48,11 @@ export default function Header({ notificationBar }: HeaderProps) {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const { mutate, shouldDisplayResetButton, isLoading: isResetLoading } = useReset({});
+  const {
+    mutate: resetScenarios,
+    isLoading: isResetLoading,
+    shouldDisplayResetButton,
+  } = useReset({ onSuccess: onReset });
 
   return (
     <>
@@ -80,11 +85,11 @@ export default function Header({ notificationBar }: HeaderProps) {
                   dropdownProps={{
                     leftColumns: [
                       {
-                        list: USE_CASES_NAVIGATION.slice(0, 5),
+                        list: USE_CASES_NAVIGATION.slice(0, 6),
                         cardBackground: true,
                       },
                       {
-                        list: USE_CASES_NAVIGATION.slice(5),
+                        list: USE_CASES_NAVIGATION.slice(6),
                         cardBackground: true,
                       },
                     ],
@@ -101,7 +106,7 @@ export default function Header({ notificationBar }: HeaderProps) {
                   >
                     <button
                       className={classNames(styles.desktopOnly, styles.resetButton, isResetLoading && styles.loading)}
-                      onClick={() => mutate()}
+                      onClick={() => resetScenarios()}
                       disabled={isResetLoading}
                       id='click_top_nav_restart'
                       data-testid={TEST_IDS.reset.resetButton}
@@ -112,7 +117,7 @@ export default function Header({ notificationBar }: HeaderProps) {
                   </Tooltip>
                 )}
                 <Button
-                  href={URL.contactSales}
+                  href={URLS.contactSales}
                   size='medium'
                   outlined
                   openNewTab
@@ -125,7 +130,7 @@ export default function Header({ notificationBar }: HeaderProps) {
                   variant='primary'
                   size='medium'
                   className={styles.signupButton}
-                  href={URL.signupUrl}
+                  href={URLS.signupUrl}
                   openNewTab
                   buttonId='click_top_nav_get_started'
                 >
@@ -145,7 +150,7 @@ export default function Header({ notificationBar }: HeaderProps) {
               </div>
             </nav>
           </Container>
-          {isMobileMenuOpen && <MobileNavbar closeMobileMenu={() => setIsMobileMenuOpen(false)} />}
+          {isMobileMenuOpen && <MobileNavbar closeMobileMenu={() => setIsMobileMenuOpen(false)} onReset={onReset} />}
         </div>
       </header>
     </>

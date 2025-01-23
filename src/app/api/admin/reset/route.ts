@@ -9,6 +9,7 @@ import { syncFirewallRuleset } from '../../../bot-firewall/api/block-ip/cloudfla
 import { deleteBlockedIp } from '../../../bot-firewall/api/get-blocked-ips/blockedIpsDatabase';
 import { PaymentAttemptDbModel } from '../../../payment-fraud/api/place-order/database';
 import { NextRequest, NextResponse } from 'next/server';
+import { SessionDbModel, UserDbModel } from '../../../account-sharing/api/database';
 
 export type ResetResponse = {
   message: string;
@@ -69,6 +70,29 @@ const deleteVisitorData = async (visitorId: string, ip: string) => {
       return deletedIpCount;
     }),
     deletedSmsVerificationRequests: await tryToDestroy(() => SmsVerificationDatabaseModel.destroy(options)),
+    deletedAccountSharingRecords: await tryToDestroy(async () => {
+      /**
+       * Deleting things a little aggressively here, because:
+       * This demo requires multiple browsers. User is likely to reset scenarios using just one visitorId,
+       * but we want to reset everything they created anyway, to avoid confusion in the other browser.
+       */
+      let deletedUserCount = 0;
+      let deletedSessionsCount = 0;
+      // Find all sessions and users created with this visitorId
+      const sessions = await SessionDbModel.findAll({ where: { visitorId } });
+      const users = await UserDbModel.findAll({ where: { createdWithVisitorId: visitorId } });
+      // Delete all sessions with this visitorId, and all users in those sessions
+      deletedSessionsCount += await SessionDbModel.destroy({ where: { visitorId } });
+      for (const session of sessions) {
+        deletedUserCount += await UserDbModel.destroy({ where: { username: session.username } });
+      }
+      // Delete all users created with this visitorId, and all sessions for those users
+      deletedUserCount += await UserDbModel.destroy({ where: { createdWithVisitorId: visitorId } });
+      for (const user of users) {
+        deletedSessionsCount += await SessionDbModel.destroy({ where: { username: user.username } });
+      }
+      return deletedUserCount + deletedSessionsCount;
+    }),
   };
 };
 

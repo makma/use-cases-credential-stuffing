@@ -22,7 +22,7 @@ import { useProducts } from './hooks/use-products';
 import { usePersonalizationNotification } from './hooks/use-personalization-notification';
 import { FPJS_CLIENT_TIMEOUT } from '../../const';
 
-export function Personalization() {
+export function Personalization({ embed }: { embed?: boolean }) {
   const { enqueueSnackbar } = useSnackbar();
 
   const { isLoading: isFpDataLoading, data } = useVisitorData({ extendedResult: true, timeout: FPJS_CLIENT_TIMEOUT });
@@ -103,7 +103,7 @@ export function Personalization() {
           <Button onClick={() => setDidAcknowledge(true)}>Okay, I understand</Button>
         </DialogActions>
       </Dialog>
-      <UseCaseWrapper useCase={USE_CASES.personalization}>
+      <UseCaseWrapper useCase={USE_CASES.personalization} embed={embed}>
         <div className={styles.twoColumnContainer}>
           <div className={styles.leftColumn}>
             <div className={styles.search}>

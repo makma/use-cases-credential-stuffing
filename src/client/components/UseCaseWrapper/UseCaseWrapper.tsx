@@ -7,7 +7,7 @@ import Button from '../Button/Button';
 import Lightbulb from './lightbulb.svg';
 import Image from 'next/image';
 import { Tooltip } from '@mui/material';
-import { UseCase } from '../../content';
+import { URLS, UseCase } from '../../content';
 import ExternalLinkIcon from '../../img/externalLinkArrow.svg';
 import RestartIcon from '../../img/restart.svg';
 import { useReset } from '../../hooks/useReset/useReset';
@@ -16,6 +16,7 @@ import { RestartHint } from './RestartHint';
 import { TEST_IDS } from '../../testIDs';
 import { FancyNumberedList } from '../FancyNumberedList/FancyNumberedList';
 import { ResourceLinks } from '../ResourceLinks/ResourceLinks';
+import { LayoutUI } from '../../../app/LayoutUI';
 
 export const INSTRUCTION_ANCHOR_ID = 'instructions';
 
@@ -26,6 +27,8 @@ type UseCaseWrapperProps = {
   returnUrl?: string;
   embed?: boolean;
   instructionsNote?: string;
+  noInnerPadding?: boolean;
+  onReset?: () => void;
 };
 
 export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
@@ -34,11 +37,13 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
   useCase,
   embed,
   instructionsNote,
+  noInnerPadding,
+  onReset,
 }) => {
-  const { title, description, articleUrl, instructions, moreResources, doNotMentionResetButton } = useCase;
+  const { title, description, articleUrl, instructions, moreResources, doNotMentionResetButton, githubUrl } = useCase;
   const learnMoreRef = useRef<ElementRef<'h3'>>(null);
 
-  const { mutate, shouldDisplayResetButton, isLoading } = useReset({});
+  const { mutate: resetScenarios, shouldDisplayResetButton, isLoading } = useReset({ onSuccess: onReset });
   const [pulseResetButton, setPulseResetButton] = useState(false);
 
   const moreResourcesPresent = moreResources && moreResources.length > 0;
@@ -55,7 +60,7 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
   }
 
   return (
-    <>
+    <LayoutUI embed={embed} onReset={onReset}>
       {embed && shouldDisplayResetButton && (
         <Tooltip title='Click Restart to remove all information obtained from this browser. This will reenable some scenarios for you if you were locked out of a specific action.'>
           <div
@@ -64,7 +69,7 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
               isLoading && styles.loading,
               pulseResetButton && styles.pulse,
             ])}
-            onClick={() => !isLoading && mutate()}
+            onClick={() => !isLoading && resetScenarios()}
             data-testid={TEST_IDS.reset.resetButton}
           >
             <div className={styles.resetTitle}>Restart</div>
@@ -77,7 +82,7 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
         <div className={styles.description}>{description}</div>
         <div className={styles.externalLinks}>
           {!hideSrcListItem && (
-            <a href='https://github.com/fingerprintjs/fingerprintjs-pro-use-cases' target='_blank' rel='noreferrer'>
+            <a href={githubUrl ?? URLS.useCasesRepoUrl} target='_blank' rel='noreferrer'>
               See on GitHub
               <Image src={ExternalLinkIcon} alt='' />
             </a>
@@ -126,7 +131,7 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
             <div />
             <div />
           </div>
-          <div className={styles.browserContent}>{children}</div>
+          <div className={classNames(styles.browserContent, noInnerPadding && styles.noPadding)}>{children}</div>
         </Container>
       </div>
 
@@ -142,6 +147,6 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
       ) : (
         <div className={styles.learnMorePlaceholder}></div>
       )}
-    </>
+    </LayoutUI>
   );
 };
