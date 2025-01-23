@@ -71,9 +71,14 @@ const deleteVisitorData = async (visitorId: string, ip: string) => {
     }),
     deletedSmsVerificationRequests: await tryToDestroy(() => SmsVerificationDatabaseModel.destroy(options)),
     deletedAccountSharingRecords: await tryToDestroy(async () => {
+      /**
+       * Deleting things a little aggressively here, because:
+       * This demo requires multiple browsers. User is likely to reset scenarios using just one visitorId,
+       * but we want to reset everything they created anyway, to avoid confusion in the other browser.
+       */
       let deletedUserCount = 0;
       let deletedSessionsCount = 0;
-      // Find all sessions and user created with this visitorId
+      // Find all sessions and users created with this visitorId
       const sessions = await SessionDbModel.findAll({ where: { visitorId } });
       const users = await UserDbModel.findAll({ where: { createdWithVisitorId: visitorId } });
       // Delete all sessions with this visitorId, and all users in those sessions

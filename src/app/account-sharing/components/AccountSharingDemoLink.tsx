@@ -13,7 +13,7 @@ export const AccountSharingDemoLink = () => {
   const url = `${origin}/account-sharing?mode=login`;
   return (
     <>
-      <code style={{ whiteSpace: 'normal' }}>{url}</code>
+      <code style={{ whiteSpace: 'normal', wordBreak: 'break-word' }}>{url}</code>
       <MyCopyButton contentToCopy={url} inline />
     </>
   );

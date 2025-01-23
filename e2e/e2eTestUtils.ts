@@ -36,6 +36,15 @@ export async function assertAlert({ page, severity, text, index = 0 }: AssertAle
   await expect(alert).toContainText(text);
 }
 
+export async function assertAlertNotPresent({ page, severity, text, index = 0 }: AssertAlertOrSnackbarArgs) {
+  const alert = page
+    .locator(`[${TEST_ATTRIBUTES.id}="${TEST_IDS.common.alert}"] [${TEST_ATTRIBUTES.severity}="${severity}"]`, {
+      hasText: text,
+    })
+    .nth(index);
+  await expect(alert).not.toBeVisible();
+}
+
 export async function assertSnackbar({ page, severity, text, index = 0 }: AssertAlertOrSnackbarArgs) {
   const snackbar = await page.getByTestId(TEST_IDS.common.snackBar).nth(index);
   await expect(snackbar).toHaveAttribute(TEST_ATTRIBUTES.severity, severity);

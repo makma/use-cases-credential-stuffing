@@ -2,7 +2,7 @@ import { chromium, firefox, Page } from '@playwright/test';
 import { UserDbModel, SessionDbModel } from '../../src/app/account-sharing/api/database';
 import { ACCOUNT_SHARING_COPY } from '../../src/app/account-sharing/const';
 import { hashString } from '../../src/server/server-utils';
-import { assertAlert } from '../e2eTestUtils';
+import { assertAlert, blockGoogleTagManager } from '../e2eTestUtils';
 import { TEST_IDS } from '../../src/client/testIDs';
 
 const TEST_ID = TEST_IDS.accountSharing;
@@ -60,6 +60,17 @@ export const logInAndAssertChallenge = async (page: Page) => {
   });
 };
 
+export const logOutAndAssertSuccess = async (page: Page) => {
+  await page.getByTestId(TEST_ID.logoutButton).click();
+  await page.waitForURL('/account-sharing?mode=login&justLoggedOut=true');
+
+  await assertAlert({
+    page,
+    severity: 'success',
+    text: ACCOUNT_SHARING_COPY.logoutSuccess,
+  });
+};
+
 export const getTwoBrowsers = async () => {
   const chromeBrowser = await chromium.launch();
   const firefoxBrowser = await firefox.launch();
@@ -71,6 +82,10 @@ export const getTwoBrowsers = async () => {
 
   const chromePage = await chromeContext.newPage();
   const firefoxPage = await firefoxContext.newPage();
+
+  // Block GTM on both pages
+  await blockGoogleTagManager(chromePage);
+  await blockGoogleTagManager(firefoxPage);
 
   return {
     chromePage,

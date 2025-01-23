@@ -11,7 +11,7 @@ import styles from '../../accountSharing.module.scss';
 import { LogoutResponse } from '../../api/logout/route';
 import { Alert } from '../../../../client/components/Alert/Alert';
 import { useRouter } from 'next/navigation';
-import { FunctionComponent, useState, useRef } from 'react';
+import { FunctionComponent, useState, useRef, useCallback } from 'react';
 import Link from 'next/link';
 import { GoChevronLeft } from 'react-icons/go';
 import { GoChevronRight } from 'react-icons/go';
@@ -53,6 +53,7 @@ const ContentCategory: FunctionComponent<{ title: string; cards: Card[] }> = ({ 
     const container = scrollContainerRef.current;
     if (!container) return;
 
+    // Width of card + flex-gap
     const scrollAmount = 266;
     const newScrollPosition = container.scrollLeft + (direction === 'left' ? -scrollAmount : scrollAmount);
 
@@ -80,10 +81,25 @@ const ContentCategory: FunctionComponent<{ title: string; cards: Card[] }> = ({ 
 };
 
 export function AccountSharingHome({ username, embed }: { username: string; embed?: boolean }) {
+  // Identify the visitor with Fingerprint
   const { data: visitorData, isLoading: isLoadingVisitorData } = useVisitorData({ timeout: FPJS_CLIENT_TIMEOUT });
+
   // To display the loading state even before Fingerprint JavaScript agent is loaded
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const router = useRouter();
+
+  const youHaveBeenLoggedOut = useCallback(
+    (otherDevice?: string) => {
+      const searchParams = new URLSearchParams();
+      searchParams.set('mode', 'login');
+      searchParams.set('justLoggedOut', 'true');
+      if (otherDevice) {
+        searchParams.set('otherDevice', otherDevice);
+      }
+      router.push(`/account-sharing${embed ? '/embed' : ''}?${searchParams.toString()}`, { scroll: false });
+    },
+    [router, embed],
+  );
 
   const {
     data: loggedInData,
@@ -138,16 +154,6 @@ export function AccountSharingHome({ username, embed }: { username: string; embe
       }
     },
   });
-
-  const youHaveBeenLoggedOut = (otherDevice?: string) => {
-    const searchParams = new URLSearchParams();
-    searchParams.set('mode', 'login');
-    searchParams.set('justLoggedOut', 'true');
-    if (otherDevice) {
-      searchParams.set('otherDevice', otherDevice);
-    }
-    router.push(`/account-sharing${embed ? '/embed' : ''}?${searchParams.toString()}`, { scroll: false });
-  };
 
   return (
     <UseCaseWrapper useCase={USE_CASES.accountSharing} noInnerPadding={true} embed={embed}>

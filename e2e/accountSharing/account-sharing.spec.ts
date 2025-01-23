@@ -1,7 +1,7 @@
 import { expect, test } from '@playwright/test';
 import { ACCOUNT_SHARING_COPY } from '../../src/app/account-sharing/const';
 import { TEST_IDS } from '../../src/client/testIDs';
-import { assertAlert, blockGoogleTagManager } from '../e2eTestUtils';
+import { assertAlert, assertAlertNotPresent, blockGoogleTagManager, resetScenarios } from '../e2eTestUtils';
 import {
   ensureTestUserNotLoggedInAnywhere,
   ensureTestUserExists,
@@ -11,6 +11,7 @@ import {
   logInAndAssertSuccess,
   logInAndAssertChallenge,
   getTwoBrowsers,
+  logOutAndAssertSuccess,
 } from './accountSharingTestUtils';
 
 const TEST_ID = TEST_IDS.accountSharing;
@@ -56,15 +57,7 @@ test.describe('Account Sharing - single browser tests', () => {
 
   test('should let users log out', async ({ page }) => {
     await logInAndAssertSuccess(page);
-
-    await page.getByTestId(TEST_ID.logoutButton).click();
-    await page.waitForURL('/account-sharing?mode=login&justLoggedOut=true');
-
-    await assertAlert({
-      page,
-      severity: 'success',
-      text: ACCOUNT_SHARING_COPY.logoutSuccess,
-    });
+    await logOutAndAssertSuccess(page);
   });
 
   test('should prevent login with incorrect password', async ({ page }) => {
@@ -89,6 +82,36 @@ test.describe('Account Sharing - single browser tests', () => {
       severity: 'error',
       text: ACCOUNT_SHARING_COPY.userNotFound,
     });
+  });
+
+  test('Going to homepage when logged out should redirect to login page', async ({ page }) => {
+    await page.goto(`/account-sharing/home/${TEST_USER.username}`, { waitUntil: 'load' });
+    await page.waitForURL('/account-sharing?mode=login');
+    await expect(page.getByTestId(TEST_ID.loginButton)).toBeVisible();
+  });
+
+  test('should allow switching between signup and login', async ({ page }) => {
+    await page.getByTestId(TEST_ID.switchToLoginButton).click();
+    await page.waitForURL('/account-sharing?mode=login');
+    await expect(page.getByTestId(TEST_ID.loginButton)).toBeVisible();
+
+    await page.getByTestId(TEST_ID.switchToSignUpButton).click();
+    await page.waitForURL('/account-sharing?mode=signup');
+    await expect(page.getByTestId(TEST_ID.signUpButton)).toBeVisible();
+  });
+
+  test('should reset toasts after reloading the page', async ({ page }) => {
+    await page.goto('/account-sharing?mode=login&justLoggedOut=true');
+    await assertAlert({ page, severity: 'success', text: ACCOUNT_SHARING_COPY.logoutSuccess });
+    await page.reload();
+    await assertAlertNotPresent({ page, severity: 'success', text: ACCOUNT_SHARING_COPY.logoutSuccess });
+  });
+
+  test('should reset toasts after resetting scenarios', async ({ page }) => {
+    await page.goto('/account-sharing?mode=login&justLoggedOut=true');
+    await assertAlert({ page, severity: 'success', text: ACCOUNT_SHARING_COPY.logoutSuccess });
+    await resetScenarios(page);
+    await assertAlertNotPresent({ page, severity: 'success', text: ACCOUNT_SHARING_COPY.logoutSuccess });
   });
 });
 

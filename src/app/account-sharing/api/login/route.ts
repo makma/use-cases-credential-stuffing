@@ -75,7 +75,9 @@ export async function POST(req: Request): Promise<NextResponse<LoginResponse>> {
   }
 
   // No devices currently logged in or force is true
+  // 1. Log out other devices
   await SessionDbModel.destroy({ where: { username } });
+  // 2. Log in on the current device
   await SessionDbModel.create({
     visitorId,
     username,

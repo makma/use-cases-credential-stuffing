@@ -33,6 +33,14 @@ const deleteQueryParam = (param: string) => {
 };
 
 export const AccountSharing = ({ embed }: { embed?: boolean }) => {
+  // Identify the visitor with Fingerprint
+  const { getData: getVisitorData } = useVisitorData(
+    { ignoreCache: true, timeout: FPJS_CLIENT_TIMEOUT },
+    {
+      immediate: false,
+    },
+  );
+
   // Start with empty username and password to make user create their own account
   // and avoid potentially interfering with other people's demos
   // Note: Can use `DEFAULT_USER` for development purposes
@@ -67,13 +75,6 @@ export const AccountSharing = ({ embed }: { embed?: boolean }) => {
   const [currentLoginResponse, setCurrentLoginResponse] = useState<LoginResponse | null>(null);
 
   const router = useRouter();
-
-  const { getData: getVisitorData } = useVisitorData(
-    { ignoreCache: true, timeout: FPJS_CLIENT_TIMEOUT },
-    {
-      immediate: false,
-    },
-  );
 
   const {
     mutate: createAccount,
@@ -290,6 +291,8 @@ export const AccountSharing = ({ embed }: { embed?: boolean }) => {
         setJustLoggedOut(null);
         setOtherDevice(null);
         setCurrentLoginResponse(null);
+        resetCreateAccountMutation();
+        resetLoginMutation();
       }}
     >
       <div className={formStyles.wrapper}>
