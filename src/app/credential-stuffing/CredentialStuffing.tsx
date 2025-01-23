@@ -18,7 +18,7 @@ import { useMutation } from 'react-query';
 import { LoginPayload, LoginResponse } from './api/authenticate/route';
 import { FPJS_CLIENT_TIMEOUT } from '../../const';
 
-export function CredentialStuffing() {
+export function CredentialStuffing({ embed }: { embed?: boolean }) {
   const { getData: getVisitorData } = useVisitorData(
     { ignoreCache: true, timeout: FPJS_CLIENT_TIMEOUT },
     {
@@ -52,7 +52,7 @@ export function CredentialStuffing() {
   const [showPassword, setShowPassword] = useState(false);
 
   return (
-    <UseCaseWrapper useCase={USE_CASES.credentialStuffing}>
+    <UseCaseWrapper useCase={USE_CASES.credentialStuffing} embed={embed}>
       <div className={formStyles.wrapper}>
         <form
           onSubmit={(e) => {

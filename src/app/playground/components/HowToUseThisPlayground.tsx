@@ -47,9 +47,9 @@ const content: HowTo[] = [
     content: [
       `If you’re using a normal browser, you will see a green box with “Not detected”.`,
       <>
-        Try opening this page using a browser automation tool like Puppeteer or our{' '}
-        <Link href='https://botd-demo.fpjs.sh/' target={'_blank'}>
-          Bot playground
+        Try opening this page using a browser automation tool like Puppeteer or an online bot playground like{' '}
+        <Link href='https://chrome.browserless.io/debugger/' target={'_blank'}>
+          Browserless
         </Link>
         .
       </>,

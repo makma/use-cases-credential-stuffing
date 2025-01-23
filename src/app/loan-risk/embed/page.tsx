@@ -5,5 +5,5 @@ import { LoanRisk } from '../LoanRisk';
 export const metadata = generateUseCaseMetadata(USE_CASES.loanRisk);
 
 export default function LoanRiskPage() {
-  return <LoanRisk />;
+  return <LoanRisk embed={true} />;
 }

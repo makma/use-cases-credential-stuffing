@@ -5,5 +5,5 @@ import { PaymentFraud } from '../PaymentFraud';
 export const metadata = generateUseCaseMetadata(USE_CASES.paymentFraud);
 
 export default function PaymentFraudPage() {
-  return <PaymentFraud />;
+  return <PaymentFraud embed={true} />;
 }

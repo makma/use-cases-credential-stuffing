@@ -16,6 +16,7 @@ import { RestartHint } from './RestartHint';
 import { TEST_IDS } from '../../testIDs';
 import { FancyNumberedList } from '../FancyNumberedList/FancyNumberedList';
 import { ResourceLinks } from '../ResourceLinks/ResourceLinks';
+import { LayoutUI } from '../../../app/LayoutUI';
 
 export const INSTRUCTION_ANCHOR_ID = 'instructions';
 
@@ -27,6 +28,7 @@ type UseCaseWrapperProps = {
   embed?: boolean;
   instructionsNote?: string;
   noInnerPadding?: boolean;
+  onReset?: () => void;
 };
 
 export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
@@ -36,11 +38,12 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
   embed,
   instructionsNote,
   noInnerPadding,
+  onReset,
 }) => {
   const { title, description, articleUrl, instructions, moreResources, doNotMentionResetButton } = useCase;
   const learnMoreRef = useRef<ElementRef<'h3'>>(null);
 
-  const { mutate, shouldDisplayResetButton, isLoading } = useReset({});
+  const { mutate: resetScenarios, shouldDisplayResetButton, isLoading } = useReset({ onSuccess: onReset });
   const [pulseResetButton, setPulseResetButton] = useState(false);
 
   const moreResourcesPresent = moreResources && moreResources.length > 0;
@@ -57,7 +60,7 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
   }
 
   return (
-    <>
+    <LayoutUI embed={embed} onReset={onReset}>
       {embed && shouldDisplayResetButton && (
         <Tooltip title='Click Restart to remove all information obtained from this browser. This will reenable some scenarios for you if you were locked out of a specific action.'>
           <div
@@ -66,7 +69,7 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
               isLoading && styles.loading,
               pulseResetButton && styles.pulse,
             ])}
-            onClick={() => !isLoading && mutate()}
+            onClick={() => !isLoading && resetScenarios()}
             data-testid={TEST_IDS.reset.resetButton}
           >
             <div className={styles.resetTitle}>Restart</div>
@@ -144,6 +147,6 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
       ) : (
         <div className={styles.learnMorePlaceholder}></div>
       )}
-    </>
+    </LayoutUI>
   );
 };

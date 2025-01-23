@@ -8,6 +8,7 @@ import { TEST_IDS } from '../client/testIDs';
 import { Fragment } from 'react';
 import { Metadata } from 'next';
 import { generateMetadata } from '../client/seo';
+import { LayoutUI } from './LayoutUI';
 
 export const metadata: Metadata = generateMetadata({
   title: 'Fingerprint Use Cases | Discover Device Intelligence Use Cases',
@@ -17,7 +18,7 @@ export const metadata: Metadata = generateMetadata({
 
 export default function Index() {
   return (
-    <>
+    <LayoutUI>
       <Container size='large' className={styles.hero}>
         <h1 className={styles.title}>Fingerprint use cases</h1>
         <div className={styles.intro}>
@@ -58,6 +59,6 @@ export default function Index() {
           </div>
         ))}
       </div>
-    </>
+    </LayoutUI>
   );
 }

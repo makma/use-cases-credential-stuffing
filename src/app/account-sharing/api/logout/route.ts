@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
-import { DeviceDbModel, UserDbModel } from '../database';
+import { SessionDbModel, UserDbModel } from '../database';
 import { getAndValidateFingerprintResult } from '../../../../server/checks';
+import { ACCOUNT_SHARING_COPY } from '../../const';
 
 export type LogoutPayload = {
   username: string;
@@ -28,21 +29,15 @@ export async function POST(req: Request): Promise<NextResponse<LogoutResponse>> 
   // Get visitorId from the Server API Identification event
   const visitorId = fingerprintResult.data.products.identification?.data?.visitorId;
   if (!visitorId) {
-    return NextResponse.json({ message: 'Visitor ID not found.', severity: 'error' }, { status: 403 });
+    return NextResponse.json({ message: ACCOUNT_SHARING_COPY.visitorIdNotFound, severity: 'error' }, { status: 403 });
   }
 
   const account = await UserDbModel.findOne({ where: { username } });
   if (!account) {
-    return NextResponse.json({ message: 'User not found.', severity: 'error' }, { status: 401 });
+    return NextResponse.json({ message: ACCOUNT_SHARING_COPY.userNotFound, severity: 'error' }, { status: 401 });
   }
 
-  // Check if the user is logged in on this device
-  // const isLoggedIn = await DeviceDbModel.findOne({ where: { username, visitorId } });
-  // if (!isLoggedIn) {
-  //   return NextResponse.json({ message: 'You are not logged in.', severity: 'error' }, { status: 401 });
-  // }
-
   // Log out the user
-  await DeviceDbModel.destroy({ where: { username, visitorId } });
-  return NextResponse.json({ message: 'Logged out successfully', severity: 'success' }, { status: 200 });
+  await SessionDbModel.destroy({ where: { username, visitorId } });
+  return NextResponse.json({ message: ACCOUNT_SHARING_COPY.logoutSuccess, severity: 'success' }, { status: 200 });
 }

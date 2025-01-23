@@ -26,8 +26,9 @@ interface HeaderProps {
     url?: string;
     backgroundColor?: string;
   };
+  onReset?: () => void;
 }
-export default function Header({ notificationBar }: HeaderProps) {
+export default function Header({ notificationBar, onReset }: HeaderProps) {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
@@ -47,7 +48,11 @@ export default function Header({ notificationBar }: HeaderProps) {
     setIsMobileMenuOpen(!isMobileMenuOpen);
   };
 
-  const { mutate, shouldDisplayResetButton, isLoading: isResetLoading } = useReset({});
+  const {
+    mutate: resetScenarios,
+    isLoading: isResetLoading,
+    shouldDisplayResetButton,
+  } = useReset({ onSuccess: onReset });
 
   return (
     <>
@@ -101,7 +106,7 @@ export default function Header({ notificationBar }: HeaderProps) {
                   >
                     <button
                       className={classNames(styles.desktopOnly, styles.resetButton, isResetLoading && styles.loading)}
-                      onClick={() => mutate()}
+                      onClick={() => resetScenarios()}
                       disabled={isResetLoading}
                       id='click_top_nav_restart'
                       data-testid={TEST_IDS.reset.resetButton}
@@ -145,7 +150,7 @@ export default function Header({ notificationBar }: HeaderProps) {
               </div>
             </nav>
           </Container>
-          {isMobileMenuOpen && <MobileNavbar closeMobileMenu={() => setIsMobileMenuOpen(false)} />}
+          {isMobileMenuOpen && <MobileNavbar closeMobileMenu={() => setIsMobileMenuOpen(false)} onReset={onReset} />}
         </div>
       </header>
     </>

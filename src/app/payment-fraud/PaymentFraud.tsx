@@ -16,7 +16,7 @@ import { PaymentPayload, PaymentResponse } from './api/place-order/route';
 import { useMutation } from 'react-query';
 import { FPJS_CLIENT_TIMEOUT } from '../../const';
 
-export function PaymentFraud() {
+export function PaymentFraud({ embed }: { embed?: boolean }) {
   const { getData: getVisitorData } = useVisitorData(
     { ignoreCache: true, timeout: FPJS_CLIENT_TIMEOUT },
     { immediate: false },
@@ -64,7 +64,7 @@ export function PaymentFraud() {
   }
 
   return (
-    <UseCaseWrapper useCase={USE_CASES.paymentFraud}>
+    <UseCaseWrapper useCase={USE_CASES.paymentFraud} embed={embed}>
       <div className={formStyles.wrapper}>
         <form onSubmit={handleSubmit} className={classNames(formStyles.useCaseForm, styles.paymentForm)}>
           <label>Card Number</label>

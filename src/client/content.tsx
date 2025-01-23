@@ -13,6 +13,7 @@ import SmsIcon from './img/smsIcon.svg';
 import { ReactNode } from 'react';
 import { RestartHint, RestartHintProps } from './components/UseCaseWrapper/RestartHint';
 import { TEST_PHONE_NUMBER } from '../app/sms-pumping/api/smsPumpingConst';
+import { AccountSharingDemoLink } from '../app/account-sharing/components/AccountSharingDemoLink';
 
 export const PRODUCTION_URL = 'https://demo.fingerprint.com';
 
@@ -186,11 +187,8 @@ export const USE_CASES = {
     instructions: [
       <>Create an account in the form below and log in to our demo streaming service.</>,
       <>
-        Open{' '}
-        <Link href={'/account-sharing?mode=login'} target='_blank'>
-          this page
-        </Link>{' '}
-        in a different browser (for example, if you are using Chrome, open Firefox, or open the demo on your phone).
+        Open this page <AccountSharingDemoLink /> in a different browser. For example, if you are using Chrome, open
+        Firefox, or open the demo on your phone.
       </>,
       <>Try logging in with the same username and password.</>,
       <>You will be blocked from logging in and forced to log out in the original browser first.</>,
@@ -450,9 +448,10 @@ export const USE_CASES = {
         demo.
       </>,
       <>
-        You will only see an error message if the request is coming from a bot. Try it using our{' '}
-        <a href='https://botd-demo.fpjs.sh/' target='_blank'>
-          online bot playground
+        You will only see an error message if the request is coming from a bot. Try it using a tool like Playwright
+        locally, or an online bot playground like{' '}
+        <a href='https://chrome.browserless.io/debugger/' target='_blank'>
+          Browserless
         </a>
         .
       </>,

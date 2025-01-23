@@ -1,6 +1,7 @@
 import { NextResponse } from 'next/server';
 import { getAndValidateFingerprintResult } from '../../../../server/checks';
-import { DeviceDbModel } from '../database';
+import { SessionDbModel, UserDbModel } from '../database';
+import { ACCOUNT_SHARING_COPY } from '../../const';
 
 export type IsLoggedInPayload = {
   requestId: string;
@@ -34,12 +35,20 @@ export async function POST(req: Request): Promise<NextResponse<IsLoggedInRespons
   // Get visitorId from the Server API Identification event
   const visitorId = fingerprintResult.data.products.identification?.data?.visitorId;
   if (!visitorId) {
-    return NextResponse.json({ message: 'Visitor ID not found.', severity: 'error' }, { status: 403 });
+    return NextResponse.json({ message: ACCOUNT_SHARING_COPY.visitorIdNotFound, severity: 'error' }, { status: 403 });
   }
 
-  const isLoggedIn = await DeviceDbModel.findOne({ where: { username, visitorId } });
-  if (!isLoggedIn) {
-    const otherDevice = await DeviceDbModel.findOne({ where: { username } });
+  // Check if the user exists
+  const user = await UserDbModel.findOne({ where: { username } });
+  if (!user) {
+    return NextResponse.json({ message: ACCOUNT_SHARING_COPY.userNotFound, severity: 'error' }, { status: 403 });
+  }
+
+  // Check if the user is logged in with this device
+  const isLoggedIn = Boolean(await SessionDbModel.findOne({ where: { username, visitorId } }));
+  // If not, return error
+  if (isLoggedIn === false) {
+    const otherDevice = await SessionDbModel.findOne({ where: { username } });
     return NextResponse.json(
       {
         message: 'You have been logged out',
@@ -55,6 +64,6 @@ export async function POST(req: Request): Promise<NextResponse<IsLoggedInRespons
     );
   }
 
-  // If the provided credentials are correct and we recognize the browser, we log the user in
-  return NextResponse.json({ message: `You are logged in as '${username}'`, severity: 'success' });
+  // If yes, return success
+  return NextResponse.json({ message: ACCOUNT_SHARING_COPY.loginSuccess(username), severity: 'success' });
 }

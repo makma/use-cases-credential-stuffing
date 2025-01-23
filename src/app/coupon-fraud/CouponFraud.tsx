@@ -22,7 +22,7 @@ const AIRMAX_PRICE = 356.02;
 const ALLSTAR_PRICE = 102.5;
 const TAXES = 6;
 
-export function CouponFraudUseCase() {
+export function CouponFraudUseCase({ embed }: { embed?: boolean }) {
   const { getData: getVisitorData } = useVisitorData(
     {
       ignoreCache: true,
@@ -85,7 +85,7 @@ export function CouponFraudUseCase() {
   ];
 
   return (
-    <UseCaseWrapper useCase={USE_CASES.couponFraud}>
+    <UseCaseWrapper useCase={USE_CASES.couponFraud} embed={embed}>
       <div className={classNames(styles.wrapper, formStyles.wrapper)}>
         <Cart items={cartItems} discount={discount} taxPerItem={TAXES} discountLabel='Coupon discount'></Cart>
         <div className={styles.innerWrapper}>

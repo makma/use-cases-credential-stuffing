@@ -128,7 +128,7 @@ const VpnDetectionUseCase: FunctionComponent = () => {
   );
 };
 
-export const VpnDetectionUseCaseWrapped: FunctionComponent = () => {
+export const VpnDetectionUseCaseWrapped: FunctionComponent<{ embed?: boolean }> = ({ embed }) => {
   return (
     <FpjsProvider
       loadOptions={{
@@ -137,7 +137,7 @@ export const VpnDetectionUseCaseWrapped: FunctionComponent = () => {
         endpoint: [env.NEXT_PUBLIC_SEALED_RESULTS_ENDPOINT, FingerprintJSPro.defaultEndpoint],
       }}
     >
-      <UseCaseWrapper useCase={USE_CASES.vpnDetection}>
+      <UseCaseWrapper useCase={USE_CASES.vpnDetection} embed={embed}>
         <VpnDetectionUseCase />
       </UseCaseWrapper>
     </FpjsProvider>

@@ -5,5 +5,5 @@ import { WebScrapingUseCase } from '../WebScraping';
 export const metadata = generateUseCaseMetadata(USE_CASES.webScraping);
 
 export default function WebScrapingPage() {
-  return <WebScrapingUseCase />;
+  return <WebScrapingUseCase embed={true} />;
 }

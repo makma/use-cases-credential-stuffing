@@ -5,5 +5,5 @@ import { CouponFraudUseCase } from '../CouponFraud';
 export const metadata = generateUseCaseMetadata(USE_CASES.couponFraud);
 
 export default function CouponFraudPage() {
-  return <CouponFraudUseCase />;
+  return <CouponFraudUseCase embed={true} />;
 }

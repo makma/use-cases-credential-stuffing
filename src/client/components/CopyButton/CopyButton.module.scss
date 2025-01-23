@@ -8,9 +8,15 @@
   border-radius: 4px;
 }
 
+.inline {
+  padding: 2px 6px;
+  display: inline-flex;
+}
+
 .copiedContainer {
   display: flex;
   gap: 4px;
+  padding-top: 4px;
   font-family: JetBrains Mono;
   align-items: center;
   text-transform: uppercase;

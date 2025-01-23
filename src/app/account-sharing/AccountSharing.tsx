@@ -1,6 +1,6 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { UseCaseWrapper } from '../../client/components/UseCaseWrapper/UseCaseWrapper';
 import React from 'react';
 import { USE_CASES } from '../../client/content';
@@ -19,26 +19,51 @@ import { CreateAccountPayload, CreateAccountResponse } from './api/create-accoun
 import { Alert } from '../../client/components/Alert/Alert';
 import { LoginPayload, LoginResponse } from './api/login/route';
 import { BackArrow } from '../../client/components/BackArrow/BackArrow';
-import { useRouter } from 'next/navigation';
-import { useQueryState, parseAsBoolean, parseAsStringEnum, parseAsString } from 'next-usequerystate';
-import { defaultUser } from './const';
+import { useRouter, useSearchParams } from 'next/navigation';
+import { useQueryState, parseAsStringEnum } from 'next-usequerystate';
+import { ACCOUNT_SHARING_COPY } from './const';
 import { useSessionStorage } from 'react-use';
 
 const TEST_ID = TEST_IDS.accountSharing;
 
-export function AccountSharing() {
-  // Default mocked user data
-  const [username, setUsername] = useSessionStorage('username', defaultUser.username);
-  const [password, setPassword] = useSessionStorage('password', defaultUser.password);
+const deleteQueryParam = (param: string) => {
+  const url = new URL(window.location.href);
+  url.searchParams.delete(param);
+  window.history.replaceState({}, '', url);
+};
+
+export const AccountSharing = ({ embed }: { embed?: boolean }) => {
+  // Start with empty username and password to make user create their own account
+  // and avoid potentially interfering with other people's demos
+  // Note: Can use `DEFAULT_USER` for development purposes
+  const [username, setUsername] = useSessionStorage('username', '');
+  const [password, setPassword] = useSessionStorage('password', '');
   const [showPassword, setShowPassword] = useSessionStorage('showPassword', false);
   const [mode, setMode] = useQueryState<'signup' | 'login'>(
     'mode',
     parseAsStringEnum(['signup', 'login']).withDefault('signup'),
   );
 
-  const [justLoggedOut, setJustLoggedOut] = useQueryState('justLoggedOut', parseAsBoolean);
-  const [otherDevice, setOtherDevice] = useQueryState('otherDevice', parseAsString);
-  // We need to store the current login response to be able to keep displaying it while new request is in progr
+  // Get potential app state from query params, then delete the query params
+  // so the alerts go away on page reload
+  const [justLoggedOut, setJustLoggedOut] = useState<boolean | null>(null);
+  const [otherDevice, setOtherDevice] = useState<string | null>(null);
+  const searchParams = useSearchParams();
+  useEffect(() => {
+    const justLoggedOut = searchParams.get('justLoggedOut');
+    if (justLoggedOut) {
+      setJustLoggedOut(justLoggedOut === 'true');
+      deleteQueryParam('justLoggedOut');
+    }
+
+    const otherDevice = searchParams.get('otherDevice');
+    if (otherDevice) {
+      setOtherDevice(otherDevice);
+      deleteQueryParam('otherDevice');
+    }
+  }, [searchParams]);
+
+  // We need to store the current login response to be able to keep displaying it while new request is in progress
   const [currentLoginResponse, setCurrentLoginResponse] = useState<LoginResponse | null>(null);
 
   const router = useRouter();
@@ -55,6 +80,7 @@ export function AccountSharing() {
     isLoading: isLoadingCreateAccount,
     data: createAccountResponse,
     error: createAccountError,
+    reset: resetCreateAccountMutation,
   } = useMutation<CreateAccountResponse, Error, Omit<CreateAccountPayload, 'requestId' | 'visitorId'>>({
     mutationKey: ['login attempt'],
     mutationFn: async ({ username, password }) => {
@@ -70,7 +96,7 @@ export function AccountSharing() {
     },
     onSuccess: (data) => {
       if (data.severity === 'success') {
-        router.push(`/account-sharing/home/${username}`, { scroll: false });
+        router.push(`/account-sharing/home/${username}/${embed ? 'embed' : ''}`, { scroll: false });
       }
     },
   });
@@ -99,7 +125,7 @@ export function AccountSharing() {
     onSuccess: (data) => {
       setCurrentLoginResponse(data);
       if (data.severity === 'success') {
-        router.push(`/account-sharing/home/${username}`, { scroll: false });
+        router.push(`/account-sharing/home/${username}/${embed ? 'embed' : ''}`, { scroll: false });
       }
     },
   });
@@ -113,6 +139,7 @@ export function AccountSharing() {
         placeholder='Username'
         defaultValue={username}
         onChange={(e) => setUsername(e.target.value)}
+        data-testid={TEST_ID.usernameInput}
         required
       />
 
@@ -123,8 +150,9 @@ export function AccountSharing() {
         className={styles.password}
         type={showPassword ? 'text' : 'password'}
         defaultValue={password}
-        data-testid={TEST_ID.password}
+        data-testid={TEST_ID.passwordInput}
         onChange={(e) => setPassword(e.target.value)}
+        required
       />
       <button className={styles.showHideIcon} type='button' onClick={() => setShowPassword(!showPassword)}>
         <Image src={showPassword ? shownIcon : hiddenIcon} alt={showPassword ? 'Hide password' : 'Show password'} />
@@ -135,12 +163,7 @@ export function AccountSharing() {
   const signUpMarkup = (
     <>
       {formMarkup}
-      <Button
-        disabled={isLoadingCreateAccount}
-        type='submit'
-        data-testid={TEST_ID.login}
-        onClick={() => createAccount({ username, password })}
-      >
+      <Button disabled={isLoadingCreateAccount} type='submit' data-testid={TEST_ID.signUpButton}>
         {isLoadingCreateAccount ? 'One moment...' : 'Sign up'}
       </Button>
       {createAccountError && <Alert severity='error'>{createAccountError.message}</Alert>}
@@ -150,7 +173,17 @@ export function AccountSharing() {
         </Alert>
       )}
       <p className={styles.switchMode}>
-        Already have an account? <button onClick={() => setMode('login')}>Log in</button>
+        Already have an account?{' '}
+        <button
+          type='button'
+          data-testid={TEST_ID.switchToLoginButton}
+          onClick={() => {
+            setMode('login');
+            resetCreateAccountMutation();
+          }}
+        >
+          Log in
+        </button>
       </p>
     </>
   );
@@ -158,12 +191,7 @@ export function AccountSharing() {
   const loginMarkup = (
     <>
       {formMarkup}
-      <Button
-        disabled={isLoadingLogin}
-        type='submit'
-        data-testid={TEST_ID.login}
-        onClick={() => login({ username, password })}
-      >
+      <Button disabled={isLoadingLogin} type='submit' data-testid={TEST_ID.loginButton}>
         {isLoadingLogin || loginResponse?.severity === 'success' ? 'One moment...' : 'Log in'}
       </Button>
       {loginError && <Alert severity='error'>{loginError.message}</Alert>}
@@ -175,9 +203,13 @@ export function AccountSharing() {
       <p className={styles.switchMode}>
         Don't have an account yet?{' '}
         <button
+          data-testid={TEST_ID.switchToSignUpButton}
+          type='button'
           onClick={() => {
             setMode('signup');
             setJustLoggedOut(null);
+            setOtherDevice(null);
+            resetLoginMutation();
           }}
         >
           Sign up first
@@ -194,7 +226,12 @@ export function AccountSharing() {
             {currentLoginResponse.message}
           </Alert>
           <div className={styles.challengeButtons}>
-            <Button variant='primary' size='medium' onClick={() => login({ username, password, force: true })}>
+            <Button
+              variant='primary'
+              size='medium'
+              onClick={() => login({ username, password, force: true })}
+              data-testid={TEST_ID.forceLoginButton}
+            >
               {isLoadingLogin || loginResponse?.severity === 'success' ? 'One moment...' : 'Log in here, log out there'}
             </Button>
             <Button variant='green' size='medium' disabled>
@@ -204,6 +241,7 @@ export function AccountSharing() {
           <BackArrow
             as='button'
             className={styles.backArrow}
+            testId={TEST_ID.challengeGoBackButton}
             onClick={async () => {
               // Reset login mutation
               resetLoginMutation();
@@ -229,7 +267,7 @@ export function AccountSharing() {
             setOtherDevice(null);
           }}
         >
-          <div className={styles.loggedOutAlertTitle}>You have been logged out</div>
+          <div className={styles.loggedOutAlertTitle}>{ACCOUNT_SHARING_COPY.youWereLoggedOut}</div>
           You are logged in on {otherDevice}. You current plan allows you to use FraudFlix on one device at a time.
           Consider <span style={{ textDecoration: 'underline' }}> upgrading your plan</span> to enjoy fraud content on
           multiple devices.
@@ -238,20 +276,36 @@ export function AccountSharing() {
     } else {
       loggedOutAlert = (
         <Alert severity='success' className={styles.loggedOutAlert} onClose={() => setJustLoggedOut(null)}>
-          You have logged out.
+          {ACCOUNT_SHARING_COPY.logoutSuccess}
         </Alert>
       );
     }
   }
 
   return (
-    <UseCaseWrapper useCase={USE_CASES.accountSharing}>
+    <UseCaseWrapper
+      useCase={USE_CASES.accountSharing}
+      embed={embed}
+      onReset={() => {
+        setJustLoggedOut(null);
+        setOtherDevice(null);
+        setCurrentLoginResponse(null);
+      }}
+    >
       <div className={formStyles.wrapper}>
         {loggedOutAlert}
-        <h3 className={styles.formTitle}>{mode === 'signup' ? 'Sign up for FraudFlix' : 'Log in to FraudFlix'}</h3>
+        <h3 className={styles.formTitle}>
+          {mode === 'signup' ? 'Sign up for ' : 'Log in to '}
+          <span>FraudFlix</span>
+        </h3>
         <form
           onSubmit={(e) => {
             e.preventDefault();
+            if (mode === 'signup') {
+              createAccount({ username, password });
+            } else {
+              login({ username, password });
+            }
           }}
           className={classNames(formStyles.useCaseForm, styles.accountSharingForm)}
         >
@@ -260,4 +314,4 @@ export function AccountSharing() {
       </div>
     </UseCaseWrapper>
   );
-}
+};
