@@ -37,7 +37,6 @@ export const AccountSharing = ({ embed }: { embed?: boolean }) => {
 
   // Start with empty username and password to make user create their own account
   // and avoid potentially interfering with other people's demos
-  // Note: Can use `DEFAULT_USER` for development purposes
   const [username, setUsername] = useSessionStorage('username', '');
   const [password, setPassword] = useSessionStorage('password', '');
   const [showPassword, setShowPassword] = useSessionStorage('showPassword', false);

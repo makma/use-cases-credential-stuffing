@@ -1,7 +1,13 @@
 import { expect, test } from '@playwright/test';
 import { TEST_IDS } from '../../src/client/testIDs';
 
-import { assertAlert, assertSnackbar, blockGoogleTagManager, resetScenarios } from '../e2eTestUtils';
+import {
+  assertAlert,
+  assertSnackbar,
+  blockGoogleTagManager,
+  resetScenarios,
+  scrollDemoIntoView,
+} from '../e2eTestUtils';
 import { ONE_MINUTE_MS } from '../../src/utils/timeUtils';
 import { TEST_BUILD } from '../../src/envShared';
 import {
@@ -22,6 +28,7 @@ test.beforeEach(async ({ page }) => {
   await blockGoogleTagManager(page);
   await page.goto(`/sms-pumping?disableBotDetection=1`);
   await resetScenarios(page);
+  await scrollDemoIntoView(page);
 });
 
 test.describe('Sending verification SMS messages', () => {

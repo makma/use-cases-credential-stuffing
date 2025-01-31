@@ -128,10 +128,13 @@ export const UseCaseWrapper: FunctionComponent<UseCaseWrapperProps> = ({
         <Container size='large' className={styles.content}>
           <div className={styles.browserBar}>
             <div />
-            <div />
-            <div />
           </div>
-          <div className={classNames(styles.browserContent, noInnerPadding && styles.noPadding)}>{children}</div>
+          <div
+            className={classNames(styles.browserContent, noInnerPadding && styles.noPadding)}
+            data-testid={TEST_IDS.common.demoBrowser}
+          >
+            {children}
+          </div>
         </Container>
       </div>
 

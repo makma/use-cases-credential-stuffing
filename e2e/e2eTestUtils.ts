@@ -24,7 +24,7 @@ export async function resetScenarios(page: Page) {
 
 type AssertAlertOrSnackbarArgs = {
   page: Page;
-  severity: Severity;
+  severity: Severity | 'info';
   text: string;
   index?: number;
 };
@@ -50,3 +50,8 @@ export async function assertSnackbar({ page, severity, text, index = 0 }: Assert
   await expect(snackbar).toHaveAttribute(TEST_ATTRIBUTES.severity, severity);
   await expect(snackbar).toContainText(text);
 }
+
+export const scrollDemoIntoView = async (page: Page) => {
+  const demoBrowser = await page.getByTestId(TEST_IDS.common.demoBrowser);
+  await demoBrowser.scrollIntoViewIfNeeded();
+};

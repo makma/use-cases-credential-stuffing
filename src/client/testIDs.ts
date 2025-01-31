@@ -13,6 +13,7 @@ export const TEST_IDS = {
     alert: 'alert',
     snackBar: 'snackBar',
     closeSnackbar: 'closeSnackbar',
+    demoBrowser: 'demoBrowser',
   },
   reset: {
     resetButton: 'resetButton',

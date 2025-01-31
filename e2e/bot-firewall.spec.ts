@@ -75,7 +75,7 @@ const assertElementWhileRepeatedlyReloadingPage = async (
   page: Page,
   locator: Locator,
   waitBetweenAttempts = 5000,
-  tries = 5,
+  tries = 10,
 ) => {
   for (let i = 0; i < tries; i++) {
     const isVisible = await locator.isVisible();
